@@ -17,7 +17,10 @@ The environment variables can be found and modified in the `.env` file. They com
 PORT=8080
 
 # URL of the Mongo DB
-DB_HOST=mongodb://127.0.0.1:27017/express-boilerplate
+DB_HOST=mongodb://127.0.0.1:27017/unity-crud-login-register-backend
+
+# JWT Secret
+JWT_SECRET=secret
 ```
 
 ### Project Structure
