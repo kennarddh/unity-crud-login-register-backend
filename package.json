@@ -1,7 +1,7 @@
 {
-	"name": "express-boilerplate",
+	"name": "unity-crud-login-register-backend",
 	"version": "1.0.0",
-	"description": "Express boilerplate",
+	"description": "Unity Crud Login Register Backend",
 	"main": "src/App.js",
 	"scripts": {
 		"build": "babel ./src --out-dir ./build",
@@ -13,12 +13,14 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/kennarddh/express-boilerplate"
+		"url": "https://github.com/kennarddh/unity-crud-login-register-backend.git"
 	},
 	"keywords": [
 		"express",
-		"boilerplate",
-		"express-boilerplate"
+		"unity",
+		"crud",
+		"login",
+		"register"
 	],
 	"author": "kennarddh",
 	"license": "ISC",
