@@ -4,17 +4,15 @@ const VerifyJWT = (req, res, next) => {
 	const token = req.headers['x-access-token']?.split(' ')[1]
 
 	if (!token)
-		return res.status(400).json({
+		return res.status(401).json({
 			success: false,
-			isLoggedIn: false,
-			error: 'Incorect token given',
+			error: 'Failed to authenticate',
 		})
 
 	jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
 		if (error)
-			return res.status(400).json({
+			return res.status(401).json({
 				success: false,
-				isLoggedIn: false,
 				error: 'Failed to authenticate',
 			})
 

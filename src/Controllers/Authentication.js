@@ -19,8 +19,9 @@ export const Register = async (req, res) => {
 		.then(() => {
 			return res.status(201).json({
 				success: true,
-				id: user._id,
-				message: 'User created',
+				data: {
+					id: user._id,
+				},
 			})
 		})
 		.catch(() => {
@@ -40,7 +41,7 @@ export const Login = async (req, res) => {
 		.exec()
 		.then(user => {
 			if (!user) {
-				return res.status(400).json({
+				return res.status(403).json({
 					success: false,
 					error: 'Invalid email or password',
 				})
@@ -50,7 +51,7 @@ export const Login = async (req, res) => {
 				.compare(body.password, user.password)
 				.then(isPasswordCorrect => {
 					if (!isPasswordCorrect) {
-						return res.status(400).json({
+						return res.status(403).json({
 							success: false,
 							error: 'Invalid email or password',
 						})
@@ -67,14 +68,16 @@ export const Login = async (req, res) => {
 						{ expiresIn: 86400 },
 						(error, token) => {
 							if (error)
-								return res.status(400).json({
+								return res.status(500).json({
 									success: false,
 									error: 'Login Failed',
 								})
 
 							return res.status(200).json({
 								success: true,
-								token: `Bearer ${token}`,
+								data: {
+									token: `Bearer ${token}`,
+								},
 							})
 						}
 					)
@@ -88,7 +91,6 @@ export const GetUserData = async (req, res) => {
 		.then(user => {
 			return res.status(200).json({
 				success: true,
-				isLoggedIn: true,
 				data: {
 					id: user.id,
 					username: user.username,
@@ -98,9 +100,8 @@ export const GetUserData = async (req, res) => {
 			})
 		})
 		.catch(() => {
-			return res.status(400).json({
+			return res.status(404).json({
 				success: false,
-				isLoggedIn: false,
 				error: 'User Not Found',
 			})
 		})
