@@ -13,6 +13,7 @@ import db from './Database'
 
 // Router
 import AuthenticationRouter from './Routes/Authentication'
+import WeaponRouter from './Routes/Weapon'
 import NoMatchRouter from './Routes/NoMatch'
 
 const app = express()
@@ -34,6 +35,7 @@ db.on('error', error => {
 
 // Router
 app.use('/api', AuthenticationRouter)
+app.use('/api', WeaponRouter)
 
 app.use('*', NoMatchRouter)
 
