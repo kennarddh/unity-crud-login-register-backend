@@ -297,16 +297,6 @@
 								}
 							}
 						}
-					},
-					"401": {
-						"description": "Unauthorized",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/failedToAuthenticate"
-								}
-							}
-						}
 					}
 				}
 			},
@@ -449,16 +439,6 @@
 											"$ref": "#/components/schemas/weaponItem"
 										}
 									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/failedToAuthenticate"
 								}
 							}
 						}
