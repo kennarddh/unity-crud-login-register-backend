@@ -297,6 +297,9 @@
 								}
 							}
 						}
+					},
+					"404": {
+						"$ref": "#/components/responses/weaponNotFound"
 					}
 				}
 			},
