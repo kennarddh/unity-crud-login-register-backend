@@ -16,6 +16,59 @@
 		}
 	],
 	"paths": {
+		"/auth/user": {
+			"get": {
+				"tags": ["Authentication"],
+				"summary": "Get the current user",
+				"description": "Get the current user",
+				"security": [
+					{
+						"x-access-token": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User Found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean",
+											"default": true
+										},
+										"data": {
+											"$ref": "#/components/schemas/user"
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/failedToAuthenticate"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "User not Found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/userNotFound"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
 		"/auth/register": {
 			"post": {
 				"tags": ["Authentication"],
@@ -217,19 +270,14 @@
 				}
 			}
 		},
-		"/auth/user": {
+		"/weapons": {
 			"get": {
-				"tags": ["Authentication"],
-				"summary": "Get the current user",
-				"description": "Get the current user",
-				"security": [
-					{
-						"x-access-token": []
-					}
-				],
+				"tags": ["Weapons"],
+				"summary": "Get all weapons",
+				"description": "Get all weapons",
 				"responses": {
 					"200": {
-						"description": "User Found",
+						"description": "Weapons Found",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -240,7 +288,165 @@
 											"default": true
 										},
 										"data": {
-											"$ref": "#/components/schemas/user"
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/weaponItem"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/failedToAuthenticate"
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": ["Weapons"],
+				"summary": "Create weapon",
+				"description": "Create weapon",
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"variant": {
+										"type": "string"
+									},
+									"type": {
+										"type": "string"
+									},
+									"exotic": {
+										"type": "boolean"
+									}
+								},
+								"required": [
+									"name",
+									"variant",
+									"type",
+									"exotic"
+								]
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"x-access-token": []
+					}
+				],
+				"responses": {
+					"201": {
+						"description": "Weapon Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean",
+											"default": true
+										},
+										"data": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string"
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/failedToAuthenticate"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad request",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/validationFailed"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean",
+											"default": false
+										},
+										"error": {
+											"type": "string",
+											"default": "Weapon not created"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/weapon/{id}": {
+			"get": {
+				"tags": ["Weapons"],
+				"summary": "Get weapons",
+				"description": "Get weapons",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"description": "Weapon id",
+						"schema": {
+							"type": "string"
+						},
+						"required": true
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Weapons Found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean",
+											"default": true
+										},
+										"data": {
+											"type": "object",
+											"$ref": "#/components/schemas/weaponItem"
 										}
 									}
 								}
@@ -258,11 +464,198 @@
 						}
 					},
 					"404": {
-						"description": "User not Found",
+						"$ref": "#/components/responses/weaponNotFound"
+					}
+				}
+			},
+			"put": {
+				"tags": ["Weapons"],
+				"summary": "Update weapon",
+				"description": "Update weapon",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"description": "Weapon id",
+						"schema": {
+							"type": "string"
+						},
+						"required": true
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"variant": {
+										"type": "string"
+									},
+									"type": {
+										"type": "string"
+									},
+									"exotic": {
+										"type": "boolean"
+									}
+								},
+								"required": [
+									"name",
+									"variant",
+									"type",
+									"exotic"
+								]
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"x-access-token": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Weapon Updated",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/userNotFound"
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean",
+											"default": true
+										},
+										"data": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string"
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/failedToAuthenticate"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad request",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/validationFailed"
+								}
+							}
+						}
+					},
+					"404": {
+						"$ref": "#/components/responses/weaponNotFound"
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean",
+											"default": false
+										},
+										"error": {
+											"type": "string",
+											"default": "Weapon not updated"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": ["Weapons"],
+				"summary": "Delete weapon",
+				"description": "Delete weapon",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"description": "Weapon id",
+						"schema": {
+							"type": "string"
+						},
+						"required": true
+					}
+				],
+				"security": [
+					{
+						"x-access-token": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Weapon Deleted",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean",
+											"default": true
+										},
+										"data": {
+											"$ref": "#/components/schemas/weaponItem"
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/failedToAuthenticate"
+								}
+							}
+						}
+					},
+					"404": {
+						"$ref": "#/components/responses/weaponNotFound"
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean",
+											"default": false
+										},
+										"error": {
+											"type": "string",
+											"default": "Weapon not deleted"
+										}
+									}
 								}
 							}
 						}
@@ -281,6 +674,26 @@
 			}
 		},
 		"schemas": {
+			"weaponItem": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"variant": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string"
+					},
+					"exotic": {
+						"type": "boolean"
+					}
+				}
+			},
 			"validationFailed": {
 				"type": "object",
 				"properties": {
@@ -348,6 +761,28 @@
 					"email": {
 						"type": "string",
 						"format": "email"
+					}
+				}
+			}
+		},
+		"responses": {
+			"weaponNotFound": {
+				"description": "Weapon not found",
+				"content": {
+					"application/json": {
+						"schema": {
+							"type": "object",
+							"properties": {
+								"success": {
+									"type": "boolean",
+									"default": false
+								},
+								"error": {
+									"type": "string",
+									"default": "Weapon not found"
+								}
+							}
+						}
 					}
 				}
 			}
