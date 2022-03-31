@@ -32,40 +32,41 @@ export const Create = async (req, res) => {
 export const Update = async (req, res) => {
 	const { body, params } = req
 
-	await Weapon.findOne({
-		id: params.id,
+	const weaponExists = await Weapon.exists({
+		_id: params.id,
 	})
 		.exec()
-		.then(weapon => {
-			const weaponUpdate = new Weapon({
-				_id: weapon._id,
-				name: body.name,
-				variant: body.variant,
-				type: body.type,
-				exotic: body.exotic,
-			})
+		.then(exists => exists)
+		.catch(() => false)
 
-			weaponUpdate
-				.save()
-				.then(() => {
-					return res.status(200).json({
-						success: true,
-						data: {
-							id: weapon._id,
-						},
-					})
-				})
-				.catch(() => {
-					return res.status(500).json({
-						success: false,
-						error: 'Weapon not updated',
-					})
-				})
+	if (!weaponExists)
+		return res.status(404).json({
+			success: false,
+			error: 'Weapon not found',
 		})
-		.catch(() => {
-			return res.status(404).json({
+
+	Weapon.updateOne(
+		{ _id: params.id },
+		{
+			name: body.name,
+			variant: body.variant,
+			type: body.type,
+			exotic: body.exotic,
+		}
+	)
+		.then(() => {
+			return res.status(200).json({
+				success: true,
+				data: {
+					id: params.id,
+				},
+			})
+		})
+		.catch(err => {
+			console.log(err)
+			return res.status(500).json({
 				success: false,
-				error: 'Weapon not found',
+				error: 'Weapon not updated',
 			})
 		})
 }
