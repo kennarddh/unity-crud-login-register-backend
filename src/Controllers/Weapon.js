@@ -74,34 +74,37 @@ export const Update = async (req, res) => {
 export const DeleteById = async (req, res) => {
 	const { params } = req
 
-	await Weapon.findOne({ _id: params.id })
+	const weaponExists = await Weapon.exists({
+		_id: params.id,
+	})
 		.exec()
-		.then(async weapon => {
-			await Weapon.findOneAndDelete({ _id: weapon.id })
-				.exec()
-				.then(() => {
-					return res.status(200).json({
-						success: true,
-						data: {
-							id: weapon._id,
-							name: weapon.name,
-							variant: weapon.variant,
-							type: weapon.type,
-							exotic: weapon.exotic,
-						},
-					})
-				})
-				.catch(() => {
-					return res.status(500).json({
-						success: false,
-						error: 'Weapon not deleted',
-					})
-				})
+		.then(exists => exists)
+		.catch(() => false)
+
+	if (!weaponExists)
+		return res.status(404).json({
+			success: false,
+			error: 'Weapon not found',
+		})
+
+	await Weapon.findOneAndDelete({ _id: params.id })
+		.exec()
+		.then(weapon => {
+			return res.status(200).json({
+				success: true,
+				data: {
+					id: weapon._id,
+					name: weapon.name,
+					variant: weapon.variant,
+					type: weapon.type,
+					exotic: weapon.exotic,
+				},
+			})
 		})
 		.catch(() => {
-			return res.status(400).json({
+			return res.status(500).json({
 				success: false,
-				error: 'Weapon not found',
+				error: 'Weapon not deleted',
 			})
 		})
 }
