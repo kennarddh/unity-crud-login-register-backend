@@ -148,9 +148,9 @@ export const GetAll = async (req, res) => {
 			})
 		})
 		.catch(() => {
-			return res.status(404).json({
+			return res.status(500).json({
 				success: false,
-				error: 'Weapons Not Found',
+				error: 'Cannot get weapons',
 			})
 		})
 }

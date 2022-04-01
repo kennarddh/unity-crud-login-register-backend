@@ -298,8 +298,25 @@
 							}
 						}
 					},
-					"404": {
-						"$ref": "#/components/responses/weaponNotFound"
+					"500": {
+						"description": "Cannot get weapons",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean",
+											"default": false
+										},
+										"error": {
+											"type": "string",
+											"default": "Cannot get weapons"
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			},
@@ -412,8 +429,8 @@
 		"/weapon/{id}": {
 			"get": {
 				"tags": ["Weapons"],
-				"summary": "Get weapons",
-				"description": "Get weapons",
+				"summary": "Get weapon",
+				"description": "Get weapon",
 				"parameters": [
 					{
 						"in": "path",
@@ -427,7 +444,7 @@
 				],
 				"responses": {
 					"200": {
-						"description": "Weapons Found",
+						"description": "Weapon Found",
 						"content": {
 							"application/json": {
 								"schema": {
