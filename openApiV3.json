@@ -6,11 +6,19 @@
 	},
 	"servers": [
 		{
-			"url": "http://localhost:{port}/api",
+			"url": "{url}:{port}/api",
 			"variables": {
 				"port": {
 					"default": "8080",
 					"description": "The port the server will run on"
+				},
+				"url": {
+					"default": "",
+					"enum": [
+						"http://localhost",
+						"https://unity-crud-login-register-back.herokuapp.com"
+					],
+					"description": "Server url"
 				}
 			}
 		}
